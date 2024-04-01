@@ -51,6 +51,7 @@ public class UI {
         System.out.println();
         printCapturedPieces(captured);
         System.out.println("Turn: " + chessMatch.getTurn());
+        if(chessMatch.getCheck()) System.out.println("CHECK!");
         System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
     }
     public static void printBoard(ChessPiece[][] chessPiece){
@@ -76,7 +77,7 @@ public class UI {
     }
 
     private static void printPiece(ChessPiece piece, boolean background) {
-        if(background == true){
+        if(background){
             System.out.print(ANSI_BLUE_BACKGROUND);
         }
         if (piece == null) {
