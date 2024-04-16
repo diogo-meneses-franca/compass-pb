@@ -1,5 +1,6 @@
 package com.pbcompass.course.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -27,6 +28,9 @@ public class Product implements Serializable {
     )
     private Set<Category> categories = new HashSet<>();
 
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> orderItems = new HashSet<>();
+
     public Product() {}
 
     public Product(Long id, String name, String description, Double price, String imgUrl) {
@@ -37,6 +41,14 @@ public class Product implements Serializable {
         this.imgUrl = imgUrl;
     }
 
+    @JsonIgnore
+    public Set<Order> getOrders(){
+        Set<Order> orders = new HashSet<>();
+        for(OrderItem orderItem : orderItems){
+            orders.add(orderItem.getOrder());
+        }
+        return orders;
+    }
     public String getDescription() {
         return description;
     }
