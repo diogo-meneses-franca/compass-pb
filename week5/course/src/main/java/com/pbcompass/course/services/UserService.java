@@ -2,6 +2,7 @@ package com.pbcompass.course.services;
 
 import com.pbcompass.course.entities.User;
 import com.pbcompass.course.repositories.UserRepository;
+import com.pbcompass.course.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,7 @@ public class UserService {
 
     public User findById(Long id) {
         Optional<User> obj = repository.findById(id);
-        return obj.get();
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
     public User insert(User user) {
@@ -33,5 +34,17 @@ public class UserService {
 
     public void delete(Long id) {
         repository.deleteById(id);
+    }
+
+    public User update(Long id, User user) {
+        User obj = repository.getOne(id);
+        updateData(obj, user);
+        return repository.save(obj);
+    }
+
+    private void updateData(User obj, User user) {
+        obj.setName(user.getName());
+        obj.setEmail(user.getEmail());
+        obj.setPhone(user.getPhone());
     }
 }
