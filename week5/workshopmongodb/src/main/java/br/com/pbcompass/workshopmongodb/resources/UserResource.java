@@ -1,6 +1,7 @@
 package br.com.pbcompass.workshopmongodb.resources;
 
 import br.com.pbcompass.workshopmongodb.domain.User;
+import br.com.pbcompass.workshopmongodb.dto.UserDTO;
 import br.com.pbcompass.workshopmongodb.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,9 @@ public class UserResource {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll(){
+    public ResponseEntity<List<UserDTO>> findAll(){
         List<User> users = userService.findAll();
-        return ResponseEntity.ok().body(users);
+        List<UserDTO> userDTOs = users.stream().map(UserDTO::new).toList();
+        return ResponseEntity.ok().body(userDTOs);
     }
 }
