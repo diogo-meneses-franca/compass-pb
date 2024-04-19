@@ -1,6 +1,7 @@
 package br.com.pbcompass.workshopmongodb.services;
 
 import br.com.pbcompass.workshopmongodb.domain.User;
+import br.com.pbcompass.workshopmongodb.dto.UserDTO;
 import br.com.pbcompass.workshopmongodb.repository.UserRepository;
 import br.com.pbcompass.workshopmongodb.services.exception.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +31,18 @@ public class UserService {
         }else {
             return user.get();
         }
+    }
+
+    public User insert(User user) {
+        return userRepository.save(user);
+    }
+
+    public void delete(String id) {
+            User user = findById(id);
+            userRepository.delete(user);
+    }
+
+    public User fromDTO(UserDTO userDTO) {
+        return new User(userDTO.getId(), userDTO.getName(), userDTO.getEmail());
     }
 }
