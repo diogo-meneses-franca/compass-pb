@@ -2,6 +2,7 @@ package br.com.pbcompass.workshopmongodb.config;
 
 import br.com.pbcompass.workshopmongodb.domain.Post;
 import br.com.pbcompass.workshopmongodb.domain.User;
+import br.com.pbcompass.workshopmongodb.dto.AuthorDTO;
 import br.com.pbcompass.workshopmongodb.repository.PostRepository;
 import br.com.pbcompass.workshopmongodb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class Instantiation implements CommandLineRunner {
         userRepository.saveAll(Arrays.asList(maria, John, frank));
 
         postRepository.deleteAll();
-        Post p1 = new Post(null, sdf.parse("21/03/2018"), "Partiu viagem!", "Vou viajar para São Paulo, abraços!", maria);
-        Post p2 = new Post(null, sdf.parse("23/03/2018"), "Bom dia!", "Acordei feliz hoje!", maria);
+        Post p1 = new Post(null, sdf.parse("21/03/2018"), "Partiu viagem!", "Vou viajar para São Paulo, abraços!", new AuthorDTO(maria));
+        Post p2 = new Post(null, sdf.parse("23/03/2018"), "Bom dia!", "Acordei feliz hoje!", new AuthorDTO(maria));
         postRepository.saveAll(Arrays.asList(p1, p2));
     }
 }
