@@ -4,10 +4,12 @@ import br.com.pbcompass.demoparkapi.entity.User;
 import br.com.pbcompass.demoparkapi.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -26,10 +28,15 @@ public class UserService {
     }
 
     @Transactional
-    public User updatePassword(Long id, String password) {
-        User userToUpdate = findById(id);
-        userToUpdate.setPassword(password);
-        return userToUpdate;
+    public void updatePassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
+        if (!newPassword.equals(confirmPassword)) {
+            throw new RuntimeException("Passwords don't match");
+        }
+        User user = findById(id);
+        if (!currentPassword.equals(user.getPassword())) {
+            throw new RuntimeException("Wrong current password");
+        }
+        user.setPassword(newPassword);
     }
 
     @Transactional(readOnly = true)

@@ -3,6 +3,7 @@ package br.com.pbcompass.demoparkapi.web.controller;
 import br.com.pbcompass.demoparkapi.entity.User;
 import br.com.pbcompass.demoparkapi.service.UserService;
 import br.com.pbcompass.demoparkapi.web.dto.UserCreateDTO;
+import br.com.pbcompass.demoparkapi.web.dto.UserPasswordDTO;
 import br.com.pbcompass.demoparkapi.web.dto.UserResponseDTO;
 import br.com.pbcompass.demoparkapi.web.dto.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -28,20 +29,22 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
         User response = userService.findById(id);
-        return ResponseEntity.ok().body(response);
+        UserResponseDTO mappedResponse = UserMapper.toUserResponseDTO(response);
+        return ResponseEntity.ok().body(mappedResponse);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updatePassword(@PathVariable Long id, @RequestBody User user) {
-        User response = userService.updatePassword(id, user.getPassword());
-        return ResponseEntity.ok().body(response);
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UserPasswordDTO userPasswordDTO) {
+        userService.updatePassword(id, userPasswordDTO.getCurrentPassword(), userPasswordDTO.getNewPassword(), userPasswordDTO.getConfirmNewPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll() {
+    public ResponseEntity<List<UserResponseDTO>> findAll() {
         List<User> response = userService.findAll();
-        return ResponseEntity.ok().body(response);
+        List<UserResponseDTO> mappedList = response.stream().map(UserMapper::toUserResponseDTO).toList();
+        return ResponseEntity.ok().body(mappedList);
     }
 }
