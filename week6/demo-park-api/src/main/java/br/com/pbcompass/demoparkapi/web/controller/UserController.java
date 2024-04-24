@@ -2,6 +2,9 @@ package br.com.pbcompass.demoparkapi.web.controller;
 
 import br.com.pbcompass.demoparkapi.entity.User;
 import br.com.pbcompass.demoparkapi.service.UserService;
+import br.com.pbcompass.demoparkapi.web.dto.UserCreateDTO;
+import br.com.pbcompass.demoparkapi.web.dto.UserResponseDTO;
+import br.com.pbcompass.demoparkapi.web.dto.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +20,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user) {
-        User response = userService.save(user);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO userCreateDTO) {
+        User mappedUser = UserMapper.toUser(userCreateDTO);
+        User response = userService.save(mappedUser);
+        UserResponseDTO mappedResponse = UserMapper.toUserResponseDTO(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(mappedResponse);
     }
 
     @GetMapping("/{id}")
