@@ -1,15 +1,14 @@
 package br.com.pbcompass.demoparkapi.service;
 
 import br.com.pbcompass.demoparkapi.entity.User;
+import br.com.pbcompass.demoparkapi.exception.UsernameUniqueViolationException;
 import br.com.pbcompass.demoparkapi.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -19,7 +18,11 @@ public class UserService {
 
     @Transactional
     public User save(User user) {
-        return userRepository.save(user);
+        try {
+            return userRepository.save(user);
+        }catch (DataIntegrityViolationException e){
+            throw new UsernameUniqueViolationException(String.format("Username %s already exists", user.getUsername()));
+        }
     }
 
     @Transactional(readOnly = true)
