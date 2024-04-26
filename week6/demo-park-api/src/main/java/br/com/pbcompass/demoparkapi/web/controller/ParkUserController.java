@@ -1,11 +1,11 @@
 package br.com.pbcompass.demoparkapi.web.controller;
 
-import br.com.pbcompass.demoparkapi.entity.User;
-import br.com.pbcompass.demoparkapi.service.UserService;
-import br.com.pbcompass.demoparkapi.web.dto.UserCreateDTO;
-import br.com.pbcompass.demoparkapi.web.dto.UserPasswordDTO;
-import br.com.pbcompass.demoparkapi.web.dto.UserResponseDTO;
-import br.com.pbcompass.demoparkapi.web.dto.mapper.UserMapper;
+import br.com.pbcompass.demoparkapi.entity.ParkUser;
+import br.com.pbcompass.demoparkapi.service.ParkUserService;
+import br.com.pbcompass.demoparkapi.web.dto.ParkUserCreateDTO;
+import br.com.pbcompass.demoparkapi.web.dto.ParkUserPasswordDTO;
+import br.com.pbcompass.demoparkapi.web.dto.ParkUserResponseDTO;
+import br.com.pbcompass.demoparkapi.web.dto.mapper.ParkUserMapper;
 import br.com.pbcompass.demoparkapi.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,9 +23,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/users")
-public class UserController {
+public class ParkUserController {
 
-    private final UserService userService;
+    private final ParkUserService parkUserService;
 
     @Operation(
             summary = "Create a new user",
@@ -33,7 +33,7 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParkUserResponseDTO.class))),
 
                     @ApiResponse(
                             responseCode = "409",
@@ -45,10 +45,10 @@ public class UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             } )
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-        User mappedUser = UserMapper.toUser(userCreateDTO);
-        User response = userService.save(mappedUser);
-        UserResponseDTO mappedResponse = UserMapper.toUserResponseDTO(response);
+    public ResponseEntity<ParkUserResponseDTO> create(@Valid @RequestBody ParkUserCreateDTO parkUserCreateDTO) {
+        ParkUser mappedUser = ParkUserMapper.toUser(parkUserCreateDTO);
+        ParkUser response = parkUserService.save(mappedUser);
+        ParkUserResponseDTO mappedResponse = ParkUserMapper.toUserResponseDTO(response);
         return ResponseEntity.status(HttpStatus.CREATED).body(mappedResponse);
     }
 
@@ -58,7 +58,7 @@ public class UserController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDTO.class))),
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParkUserResponseDTO.class))),
 
                     @ApiResponse(
                             responseCode = "404",
@@ -66,9 +66,9 @@ public class UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             } )
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
-        User response = userService.findById(id);
-        UserResponseDTO mappedResponse = UserMapper.toUserResponseDTO(response);
+    public ResponseEntity<ParkUserResponseDTO> findById(@PathVariable Long id) {
+        ParkUser response = parkUserService.findById(id);
+        ParkUserResponseDTO mappedResponse = ParkUserMapper.toUserResponseDTO(response);
         return ResponseEntity.ok().body(mappedResponse);
     }
 
@@ -89,15 +89,15 @@ public class UserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             } )
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePassword(@PathVariable Long id,@Valid @RequestBody UserPasswordDTO userPasswordDTO) {
-        userService.updatePassword(id, userPasswordDTO.getCurrentPassword(), userPasswordDTO.getNewPassword(), userPasswordDTO.getConfirmNewPassword());
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id,@Valid @RequestBody ParkUserPasswordDTO parkUserPasswordDTO) {
+        parkUserService.updatePassword(id, parkUserPasswordDTO.getCurrentPassword(), parkUserPasswordDTO.getNewPassword(), parkUserPasswordDTO.getConfirmNewPassword());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> findAll() {
-        List<User> response = userService.findAll();
-        List<UserResponseDTO> mappedList = response.stream().map(UserMapper::toUserResponseDTO).toList();
+    public ResponseEntity<List<ParkUserResponseDTO>> findAll() {
+        List<ParkUser> response = parkUserService.findAll();
+        List<ParkUserResponseDTO> mappedList = response.stream().map(ParkUserMapper::toUserResponseDTO).toList();
         return ResponseEntity.ok().body(mappedList);
     }
 }

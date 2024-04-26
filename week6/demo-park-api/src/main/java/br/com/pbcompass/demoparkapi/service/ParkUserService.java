@@ -1,33 +1,34 @@
 package br.com.pbcompass.demoparkapi.service;
 
-import br.com.pbcompass.demoparkapi.entity.User;
+import br.com.pbcompass.demoparkapi.entity.ParkUser;
 import br.com.pbcompass.demoparkapi.exception.UsernameUniqueViolationException;
-import br.com.pbcompass.demoparkapi.repository.UserRepository;
+import br.com.pbcompass.demoparkapi.repository.ParkUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class ParkUserService {
 
-    private final UserRepository userRepository;
+    private final ParkUserRepository parkUserRepository;
 
     @Transactional
-    public User save(User user) {
+    public ParkUser save(ParkUser parkUser) {
         try {
-            return userRepository.save(user);
+            return parkUserRepository.save(parkUser);
         }catch (DataIntegrityViolationException e){
-            throw new UsernameUniqueViolationException(String.format("Username %s already exists", user.getUsername()));
+            throw new UsernameUniqueViolationException(String.format("Username %s already exists", parkUser.getUsername()));
         }
     }
 
     @Transactional(readOnly = true)
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public ParkUser findById(Long id) {
+        return parkUserRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     @Transactional
@@ -35,7 +36,7 @@ public class UserService {
         if (!newPassword.equals(confirmPassword)) {
             throw new RuntimeException("Passwords don't match");
         }
-        User user = findById(id);
+        ParkUser user = findById(id);
         if (!currentPassword.equals(user.getPassword())) {
             throw new RuntimeException("Wrong current password");
         }
@@ -43,7 +44,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<ParkUser> findAll() {
+        return parkUserRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public ParkUser findByUsername(String username) {
+        return parkUserRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("Username not found"));
     }
 }

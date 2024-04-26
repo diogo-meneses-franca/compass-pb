@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class UserPasswordDTO {
+public class ParkUserPasswordDTO {
 
     @NotBlank
     @Size(min = 6, max = 6)

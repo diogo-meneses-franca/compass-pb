@@ -1,8 +1,8 @@
 package br.com.pbcompass.demoparkapi;
 
-import br.com.pbcompass.demoparkapi.web.dto.UserCreateDTO;
-import br.com.pbcompass.demoparkapi.web.dto.UserPasswordDTO;
-import br.com.pbcompass.demoparkapi.web.dto.UserResponseDTO;
+import br.com.pbcompass.demoparkapi.web.dto.ParkUserCreateDTO;
+import br.com.pbcompass.demoparkapi.web.dto.ParkUserPasswordDTO;
+import br.com.pbcompass.demoparkapi.web.dto.ParkUserResponseDTO;
 import br.com.pbcompass.demoparkapi.web.exception.ErrorMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,21 +22,21 @@ public class UserIT {
 
     @Test
     public void createUser_WithValidUsernameAndPassword_ReturnsCreatedUserWithStatus201() {
-        UserResponseDTO userResponseDTO = testClient
+        ParkUserResponseDTO parkUserResponseDTO = testClient
                 .post()
                 .uri("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserCreateDTO("tody@email.com", "123456"))
+                .bodyValue(new ParkUserCreateDTO("tody@email.com", "123456"))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectBody(UserResponseDTO.class)
+                .expectBody(ParkUserResponseDTO.class)
                 .returnResult()
                 .getResponseBody();
 
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getId()).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getUsername()).isEqualTo("tody@email.com");
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getRole()).isEqualTo("CLIENT");
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getUsername()).isEqualTo("tody@email.com");
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getRole()).isEqualTo("CLIENT");
     }
 
     @Test
@@ -45,7 +45,7 @@ public class UserIT {
                 .post()
                 .uri("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserCreateDTO("", "123456"))
+                .bodyValue(new ParkUserCreateDTO("", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -62,7 +62,7 @@ public class UserIT {
                 .post()
                 .uri("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserCreateDTO("tody@email.com", ""))
+                .bodyValue(new ParkUserCreateDTO("tody@email.com", ""))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -76,7 +76,7 @@ public class UserIT {
                 .post()
                 .uri("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserCreateDTO("tody@email.com", "1234567"))
+                .bodyValue(new ParkUserCreateDTO("tody@email.com", "1234567"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -90,7 +90,7 @@ public class UserIT {
                 .post()
                 .uri("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserCreateDTO("tody@email.com", "1234"))
+                .bodyValue(new ParkUserCreateDTO("tody@email.com", "1234"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -107,7 +107,7 @@ public class UserIT {
                 .post()
                 .uri("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new UserCreateDTO("ana@email.com", "123456"))
+                .bodyValue(new ParkUserCreateDTO("ana@email.com", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(409)
                 .expectBody(ErrorMessage.class)
@@ -120,20 +120,20 @@ public class UserIT {
 
     @Test
     public void findUserById_WithValidId_ReturnsUserWithStatus200() {
-        UserResponseDTO userResponseDTO = testClient
+        ParkUserResponseDTO parkUserResponseDTO = testClient
                 .get()
                 .uri("/api/v1/users/100")
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(UserResponseDTO.class)
+                .expectBody(ParkUserResponseDTO.class)
                 .returnResult()
                 .getResponseBody();
 
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getId()).isNotNull();
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getId()).isEqualTo(100);
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getUsername()).isEqualTo("ana@email.com");
-        org.assertj.core.api.Assertions.assertThat(userResponseDTO.getRole()).isEqualTo("ADMIN");
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isEqualTo(100);
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getUsername()).isEqualTo("ana@email.com");
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getRole()).isEqualTo("ADMIN");
     }
 
     @Test
@@ -156,7 +156,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/100")
-                .bodyValue(new UserPasswordDTO("123456", "123456", "123456"))
+                .bodyValue(new ParkUserPasswordDTO("123456", "123456", "123456"))
                 .exchange()
                 .expectStatus().isNoContent();
     }
@@ -166,7 +166,7 @@ public class UserIT {
         ErrorMessage errorMessage = testClient
                 .patch()
                 .uri("/api/v1/users/0")
-                .bodyValue(new UserPasswordDTO("123456", "123456", "123456"))
+                .bodyValue(new ParkUserPasswordDTO("123456", "123456", "123456"))
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(ErrorMessage.class)
@@ -181,7 +181,7 @@ public class UserIT {
         ErrorMessage errorMessage = testClient
                 .patch()
                 .uri("/api/v1/users/0")
-                .bodyValue(new UserPasswordDTO("", "", ""))
+                .bodyValue(new ParkUserPasswordDTO("", "", ""))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -193,7 +193,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/0")
-                .bodyValue(new UserPasswordDTO("12345", "12345", "12345"))
+                .bodyValue(new ParkUserPasswordDTO("12345", "12345", "12345"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -205,7 +205,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/0")
-                .bodyValue(new UserPasswordDTO("12345678", "12345678", "12345678"))
+                .bodyValue(new ParkUserPasswordDTO("12345678", "12345678", "12345678"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
                 .expectBody(ErrorMessage.class)
@@ -220,7 +220,7 @@ public class UserIT {
         ErrorMessage errorMessage = testClient
                 .patch()
                 .uri("/api/v1/users/100")
-                .bodyValue(new UserPasswordDTO("123456", "123456", "000000"))
+                .bodyValue(new ParkUserPasswordDTO("123456", "123456", "000000"))
                 .exchange()
                 .expectStatus().isEqualTo(500)
                 .expectBody(ErrorMessage.class)
@@ -232,7 +232,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/100")
-                .bodyValue(new UserPasswordDTO("123456", "000000", "123456"))
+                .bodyValue(new ParkUserPasswordDTO("123456", "000000", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(500)
                 .expectBody(ErrorMessage.class)
