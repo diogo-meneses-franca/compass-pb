@@ -42,4 +42,11 @@ public class ApiExceptionHandler {
         log.error("Api Error - ", e);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorMessage(request, HttpStatus.NOT_FOUND, e.getMessage()));
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorMessage> runtimeException(RuntimeException e,
+                                                         HttpServletRequest request){
+        log.error("Api Error - ", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
+    }
 }
