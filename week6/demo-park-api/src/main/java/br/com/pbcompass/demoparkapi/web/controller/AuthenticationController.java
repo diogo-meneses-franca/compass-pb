@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.NoSuchAlgorithmException;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("api/v1")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthenticationController {
@@ -44,6 +44,6 @@ public class AuthenticationController {
         }
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid credentials"))
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, "Invalid credentials"));
     }
 }

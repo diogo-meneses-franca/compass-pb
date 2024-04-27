@@ -9,7 +9,7 @@ import org.modelmapper.PropertyMap;
 public class ParkUserMapper {
 
     public static ParkUser toUser(ParkUserCreateDTO parkUserCreateDTO) {
-        return new ModelMapper().map(ParkUserCreateDTO.class, ParkUser.class);
+        return new ModelMapper().map(parkUserCreateDTO, ParkUser.class);
     }
 
     public static ParkUserResponseDTO toUserResponseDTO(ParkUser user) {

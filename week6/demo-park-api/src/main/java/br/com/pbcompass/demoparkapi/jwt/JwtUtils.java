@@ -19,10 +19,10 @@ public class JwtUtils {
 
     public static final String JWT_BEARER = "Bearer ";
     public static final String JWT_AUTHORIZATION = "Authorization";
-    public static final String SECRET_KEY = "4679842065-8462486772-4682730348";
+    public static final String SECRET_KEY = "0123456789-0123456789-0123456789";
     public static final long EXPIRE_DAYS = 0;
     public static final long EXPIRE_HOURS = 0;
-    public static final long EXPIRE_MINUTES = 2;
+    public static final long EXPIRE_MINUTES = 15;
 
     private JwtUtils(){}
 
@@ -53,10 +53,9 @@ public class JwtUtils {
 
     private static Claims getClaimsFromToken(String token) {
         try{
-            return Jwts.parser().setSigningKey(generateKey()).build()
-                    .parseEncryptedClaims(refactorToken(token)).getBody();
+            return Jwts.parser().setSigningKey(generateKey()).build().parseClaimsJws(refactorToken(token)).getBody();
         }catch (JwtException | NoSuchAlgorithmException e){
-            log.error(String.format("Invalid JWT token: %s", token), e.getMessage());
+            log.error(String.format("Invalid JWT token: %s", token) + e.getMessage());
         }
         return null;
     }
@@ -68,7 +67,7 @@ public class JwtUtils {
     public static boolean isTokenValid(String token) {
         try{
             Jwts.parser().setSigningKey(generateKey()).build()
-                    .parseEncryptedClaims(refactorToken(token));
+                    .parseClaimsJws(refactorToken(token));
             return true;
         }catch (JwtException | NoSuchAlgorithmException e){
             log.error(String.format("Invalid JWT token: %s", token), e.getMessage());

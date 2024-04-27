@@ -6,6 +6,7 @@ import br.com.pbcompass.demoparkapi.repository.ParkUserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,12 @@ import java.util.List;
 public class ParkUserService {
 
     private final ParkUserRepository parkUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public ParkUser save(ParkUser parkUser) {
         try {
+            parkUser.setPassword(passwordEncoder.encode(parkUser.getPassword()));
             return parkUserRepository.save(parkUser);
         }catch (DataIntegrityViolationException e){
             throw new UsernameUniqueViolationException(String.format("Username %s already exists", parkUser.getUsername()));
@@ -37,10 +40,10 @@ public class ParkUserService {
             throw new RuntimeException("Passwords don't match");
         }
         ParkUser user = findById(id);
-        if (!currentPassword.equals(user.getPassword())) {
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new RuntimeException("Wrong current password");
         }
-        user.setPassword(newPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional(readOnly = true)
