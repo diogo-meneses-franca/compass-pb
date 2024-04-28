@@ -8,9 +8,11 @@ import br.com.pbcompass.demoparkapi.web.dto.ParkUserResponseDTO;
 import br.com.pbcompass.demoparkapi.web.dto.mapper.ParkUserMapper;
 import br.com.pbcompass.demoparkapi.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,10 @@ public class ParkUserController {
                             description = "User already exists.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
+                            responseCode = "403",
+                            description = "User without permissions to access this resource.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(
                             responseCode = "422",
                             description = "Resource not processed, invalid entry data",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
@@ -55,12 +61,17 @@ public class ParkUserController {
 
     @Operation(
             summary = "Search a user by id",
-            description = "Resource to search a user by id",
+            description = "Request requires a Bearer token. Access allowed to ADMIN or CLIENT",
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
                             responseCode = "200",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParkUserResponseDTO.class))),
 
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "User without permissions to access this resource.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
                             responseCode = "404",
                             description = "Resource not found",
@@ -76,11 +87,16 @@ public class ParkUserController {
 
     @Operation(
             summary = "Update password",
-            description = "Resource to update a user password through it's id",
+            description = "Request requires a Bearer token. Access allowed to ADMIN or CLIENT",
+            security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
                             responseCode = "204",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "User without permissions to access this resource.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
                             responseCode = "500",
                             description = "Passwords don't match",
@@ -91,12 +107,27 @@ public class ParkUserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             } )
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT') AND (#id == authentication.principal.id)")
     public ResponseEntity<Void> updatePassword(@PathVariable Long id,@Valid @RequestBody ParkUserPasswordDTO parkUserPasswordDTO) {
         parkUserService.updatePassword(id, parkUserPasswordDTO.getCurrentPassword(), parkUserPasswordDTO.getNewPassword(), parkUserPasswordDTO.getConfirmNewPassword());
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Lists all registered users",
+            description = "Request requires a Bearer token. Access allowed to ADMIN",
+            security = @SecurityRequirement(name = "security"),
+            responses = {
+                @ApiResponse(responseCode = "200", description = "List all users",
+                        content = @Content(
+                                mediaType = "application/json",
+                                array = @ArraySchema(schema = @Schema(implementation = ParkUserResponseDTO.class)))),
+                    @ApiResponse(
+                            responseCode = "403",
+                            description = "User without permissions to access this resource.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+    })
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ParkUserResponseDTO>> findAll() {
         List<ParkUser> response = parkUserService.findAll();
         List<ParkUserResponseDTO> mappedList = response.stream().map(ParkUserMapper::toUserResponseDTO).toList();
