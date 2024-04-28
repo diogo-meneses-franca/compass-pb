@@ -13,7 +13,7 @@ public class JwtUserDetails extends User {
         this.parkUser = parkUser;
     }
 
-    public Long geId() {
+    public Long getId() {
         return parkUser.getId();
     }
 
