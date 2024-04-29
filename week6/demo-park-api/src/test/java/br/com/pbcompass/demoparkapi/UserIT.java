@@ -286,12 +286,12 @@ public class UserIT {
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("123456", "123456", "000000"))
                 .exchange()
-                .expectStatus().isEqualTo(500)
+                .expectStatus().isEqualTo(400)
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
 
         Assertions.assertThat(errorMessage).isNotNull();
-        Assertions.assertThat(errorMessage.getStatus()).isEqualTo(500);
+        Assertions.assertThat(errorMessage.getStatus()).isEqualTo(400);
 
         testClient
                 .patch()
@@ -299,12 +299,12 @@ public class UserIT {
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("123456", "000000", "123456"))
                 .exchange()
-                .expectStatus().isEqualTo(500)
+                .expectStatus().isEqualTo(400)
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
 
         Assertions.assertThat(errorMessage).isNotNull();
-        Assertions.assertThat(errorMessage.getStatus()).isEqualTo(500);
+        Assertions.assertThat(errorMessage.getStatus()).isEqualTo(400);
     }
 
 

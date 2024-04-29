@@ -3,10 +3,10 @@ package br.com.pbcompass.demoparkapi.service;
 import br.com.pbcompass.demoparkapi.entity.ParkUser;
 import br.com.pbcompass.demoparkapi.exception.UsernameUniqueViolationException;
 import br.com.pbcompass.demoparkapi.repository.ParkUserRepository;
+import br.com.pbcompass.demoparkapi.exception.InvalidEntryDataException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,11 +38,11 @@ public class ParkUserService {
     @Transactional
     public void updatePassword(Long id, String currentPassword, String newPassword, String confirmPassword) {
         if (!newPassword.equals(confirmPassword)) {
-            throw new RuntimeException("Passwords don't match");
+            throw new InvalidEntryDataException("Passwords don't match");
         }
         ParkUser user = findById(id);
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new RuntimeException("Wrong current password");
+            throw new InvalidEntryDataException("Wrong current password");
         }
         user.setPassword(passwordEncoder.encode(newPassword));
     }
