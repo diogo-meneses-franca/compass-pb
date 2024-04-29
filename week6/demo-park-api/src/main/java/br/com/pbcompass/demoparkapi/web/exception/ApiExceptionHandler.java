@@ -1,5 +1,6 @@
 package br.com.pbcompass.demoparkapi.web.exception;
 
+import br.com.pbcompass.demoparkapi.exception.CpfUniqueViolationException;
 import br.com.pbcompass.demoparkapi.exception.InvalidEntryDataException;
 import br.com.pbcompass.demoparkapi.exception.UsernameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,9 +38,9 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage()));
     }
 
-    @ExceptionHandler(UsernameUniqueViolationException.class)
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
     public ResponseEntity<ErrorMessage> usernameUniqueViolationException(
-            UsernameUniqueViolationException e,
+            RuntimeException e,
             HttpServletRequest request) {
         log.error("Api Error - ", e);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorMessage(request, HttpStatus.CONFLICT, e.getMessage()));

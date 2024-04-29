@@ -2,8 +2,8 @@ package br.com.pbcompass.demoparkapi.web.controller;
 
 import br.com.pbcompass.demoparkapi.jwt.JwtToken;
 import br.com.pbcompass.demoparkapi.jwt.JwtUserDetailsService;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserLoginDto;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserResponseDTO;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserLoginDto;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserResponseDTO;
 import br.com.pbcompass.demoparkapi.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

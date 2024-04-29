@@ -1,4 +1,4 @@
-package br.com.pbcompass.demoparkapi.web.dto;
+package br.com.pbcompass.demoparkapi.web.dto.user;
 
 import lombok.*;
 

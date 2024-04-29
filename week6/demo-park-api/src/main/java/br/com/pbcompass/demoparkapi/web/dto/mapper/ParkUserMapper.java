@@ -1,11 +1,14 @@
 package br.com.pbcompass.demoparkapi.web.dto.mapper;
 
 import br.com.pbcompass.demoparkapi.entity.ParkUser;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserCreateDTO;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserResponseDTO;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserCreateDTO;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserResponseDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkUserMapper {
 
     public static ParkUser toUser(ParkUserCreateDTO parkUserCreateDTO) {

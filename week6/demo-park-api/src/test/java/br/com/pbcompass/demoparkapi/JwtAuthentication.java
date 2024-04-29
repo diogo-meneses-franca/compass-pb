@@ -1,7 +1,7 @@
 package br.com.pbcompass.demoparkapi;
 
 import br.com.pbcompass.demoparkapi.jwt.JwtToken;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserLoginDto;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserLoginDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.reactive.server.WebTestClient;
 

@@ -2,9 +2,9 @@ package br.com.pbcompass.demoparkapi.web.controller;
 
 import br.com.pbcompass.demoparkapi.entity.ParkUser;
 import br.com.pbcompass.demoparkapi.service.ParkUserService;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserCreateDTO;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserPasswordDTO;
-import br.com.pbcompass.demoparkapi.web.dto.ParkUserResponseDTO;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserCreateDTO;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserPasswordDTO;
+import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserResponseDTO;
 import br.com.pbcompass.demoparkapi.web.dto.mapper.ParkUserMapper;
 import br.com.pbcompass.demoparkapi.web.exception.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;

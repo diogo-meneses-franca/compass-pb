@@ -1,6 +1,7 @@
 package br.com.pbcompass.demoparkapi.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,28 +15,28 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "clients")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name = "users")
-@EntityListeners(AuditingEntityListener.class)
-public class ParkUser implements Serializable {
+@AllArgsConstructor
+public class ParkClient implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "username", nullable = false, unique = true, length = 100)
-    private String username;
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
 
-    @Column(name = "password", nullable = false, length = 200)
-    private String password;
+    @Column(name = "cpf", nullable = false, unique = true, length = 11)
+    private String cpf;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, length = 50)
-    private Role role = Role.ROLE_CLIENT;
+    @OneToOne
+    @JoinColumn(name = "id_user", nullable = false)
+    private ParkUser user;
 
     @CreatedDate
     @Column(name = "created")
@@ -53,27 +54,16 @@ public class ParkUser implements Serializable {
     @Column(name = "updated_by")
     private String updatedBy;
 
-    public enum Role {
-        ROLE_ADMIN, ROLE_CLIENT
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ParkUser demoParkUser = (ParkUser) o;
-        return Objects.equals(id, demoParkUser.id);
+        ParkClient that = (ParkClient) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hashCode(id);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                '}';
     }
 }
