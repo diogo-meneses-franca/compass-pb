@@ -91,8 +91,7 @@ public class ParkUserController {
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
-                            responseCode = "204",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
+                            responseCode = "204"),
                     @ApiResponse(
                             responseCode = "403",
                             description = "User without permissions to access this resource.",
@@ -102,14 +101,17 @@ public class ParkUserController {
                             description = "Passwords don't match",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
+                            responseCode = "422",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(
                             responseCode = "500",
                             description = "Wrong current password",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             } )
     @PatchMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'CLIENT') AND (#id == authentication.principal.id)")
-    public ResponseEntity<Void> updatePassword(@PathVariable Long id,@Valid @RequestBody ParkUserPasswordDTO parkUserPasswordDTO) {
-        parkUserService.updatePassword(id, parkUserPasswordDTO.getCurrentPassword(), parkUserPasswordDTO.getNewPassword(), parkUserPasswordDTO.getConfirmNewPassword());
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id,@Valid @RequestBody ParkUserPasswordDTO user) {
+        parkUserService.updatePassword(id, user.getCurrentPassword(), user.getNewPassword(), user.getConfirmNewPassword());
         return ResponseEntity.noContent().build();
     }
 

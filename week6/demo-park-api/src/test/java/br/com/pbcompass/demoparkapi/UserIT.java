@@ -123,6 +123,7 @@ public class UserIT {
         ParkUserResponseDTO parkUserResponseDTO = testClient
                 .get()
                 .uri("/api/v1/users/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(ParkUserResponseDTO.class)
@@ -134,6 +135,38 @@ public class UserIT {
         org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isEqualTo(100);
         org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getUsername()).isEqualTo("ana@email.com");
         org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getRole()).isEqualTo("ADMIN");
+
+        parkUserResponseDTO = testClient
+                .get()
+                .uri("/api/v1/users/101")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ParkUserResponseDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isEqualTo(101);
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getUsername()).isEqualTo("bia@email.com");
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getRole()).isEqualTo("CLIENT");
+
+        parkUserResponseDTO = testClient
+                .get()
+                .uri("/api/v1/users/101")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ParkUserResponseDTO.class)
+                .returnResult()
+                .getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getId()).isEqualTo(101);
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getUsername()).isEqualTo("bia@email.com");
+        org.assertj.core.api.Assertions.assertThat(parkUserResponseDTO.getRole()).isEqualTo("CLIENT");
     }
 
     @Test
@@ -141,6 +174,7 @@ public class UserIT {
         ErrorMessage errorMessage = testClient
                 .get()
                 .uri("/api/v1/users/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody(ErrorMessage.class)
@@ -152,28 +186,54 @@ public class UserIT {
     }
 
     @Test
+    public void findUserById_WithValidUserRequestingDataOfOtherUser_ReturnsUserErrorMessageWithStatus403() {
+        ErrorMessage errorMessage = testClient
+                .get()
+                .uri("/api/v1/users/102")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult()
+                .getResponseBody();
+
+        org.assertj.core.api.Assertions.assertThat(errorMessage).isNotNull();
+        org.assertj.core.api.Assertions.assertThat(errorMessage.getStatus()).isEqualTo(403);
+    }
+
+    @Test
     public void updateUserPassword_WithValidData_ReturnsStatusCode204() {
         testClient
                 .patch()
                 .uri("/api/v1/users/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
+                .bodyValue(new ParkUserPasswordDTO("123456", "123456", "123456"))
+                .exchange()
+                .expectStatus().isNoContent();
+
+        testClient
+                .patch()
+                .uri("/api/v1/users/101")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("123456", "123456", "123456"))
                 .exchange()
                 .expectStatus().isNoContent();
     }
 
     @Test
-    public void updateUserPassword_WithInvalidId_ReturnsErrorMessageWithStatus404() {
+    public void updateUserPassword_WithDifferentUser_ReturnsErrorMessageWithStatus403() {
         ErrorMessage errorMessage = testClient
                 .patch()
                 .uri("/api/v1/users/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("123456", "123456", "123456"))
                 .exchange()
-                .expectStatus().isNotFound()
+                .expectStatus().isForbidden()
                 .expectBody(ErrorMessage.class)
                 .returnResult().getResponseBody();
 
         Assertions.assertThat(errorMessage).isNotNull();
-        Assertions.assertThat(errorMessage.getStatus()).isEqualTo(404);
+        Assertions.assertThat(errorMessage.getStatus()).isEqualTo(403);
     }
 
     @Test
@@ -181,6 +241,7 @@ public class UserIT {
         ErrorMessage errorMessage = testClient
                 .patch()
                 .uri("/api/v1/users/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("", "", ""))
                 .exchange()
                 .expectStatus().isEqualTo(422)
@@ -193,6 +254,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("12345", "12345", "12345"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
@@ -205,6 +267,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("12345678", "12345678", "12345678"))
                 .exchange()
                 .expectStatus().isEqualTo(422)
@@ -220,6 +283,7 @@ public class UserIT {
         ErrorMessage errorMessage = testClient
                 .patch()
                 .uri("/api/v1/users/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("123456", "123456", "000000"))
                 .exchange()
                 .expectStatus().isEqualTo(500)
@@ -232,6 +296,7 @@ public class UserIT {
         testClient
                 .patch()
                 .uri("/api/v1/users/100")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@email.com", "123456"))
                 .bodyValue(new ParkUserPasswordDTO("123456", "000000", "123456"))
                 .exchange()
                 .expectStatus().isEqualTo(500)
