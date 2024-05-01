@@ -1,6 +1,7 @@
 package br.com.pbcompass.demoparkapi;
 
 import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientCreateDto;
+import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientPageableDto;
 import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientResponseDto;
 import br.com.pbcompass.demoparkapi.web.exception.ErrorMessage;
 import org.assertj.core.api.Assertions;
@@ -134,5 +135,107 @@ public class ClientIT {
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatus()).isEqualTo(403);
 
+    }
+
+    @Test
+    public void findClientById_WithAdminUserPermission_ReturnsClientDtoWithStatus200(){
+        ParkClientResponseDto response = testClient
+                .get()
+                .uri("/api/v1/clients/11")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ParkClientResponseDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getId()).isNotNull();
+        Assertions.assertThat(response.getId()).isEqualTo(11);
+        Assertions.assertThat(response.getName()).isEqualTo("Bianca Silva");
+        Assertions.assertThat(response.getCpf()).isEqualTo("02797865227");
+
+    }
+
+    @Test
+    public void findClientById_WithIdNotRegistered_ReturnsErrorMessageWithStatus404(){
+        ErrorMessage response = testClient
+                .get()
+                .uri("/api/v1/clients/0")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getStatus()).isEqualTo(404);
+
+    }
+
+    @Test
+    public void findClientById_WithoutAdminPermission_ReturnsErrorMessageWithStatus403(){
+        ErrorMessage response = testClient
+                .get()
+                .uri("/api/v1/clients/11")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bob@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getStatus()).isEqualTo(403);
+
+    }
+
+    @Test
+    public void findAll_WithValidEntryData_ReturnsClientsWithStatus200(){
+        ParkClientPageableDto response = testClient
+                .get()
+                .uri("/api/v1/clients")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ParkClientPageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getContent().size()).isEqualTo(2);
+        Assertions.assertThat(response.getTotalPages()).isEqualTo(1);
+        Assertions.assertThat(response.getNumber()).isEqualTo(0);
+        Assertions.assertThat(response.getTotalElements()).isEqualTo(2);
+    }
+
+    @Test
+    public void findAll_WithValidEntryDataAndPagination_ReturnsClientsWithStatus200() {
+        ParkClientPageableDto response = testClient
+                .get()
+                .uri("/api/v1/clients?size=1&page=1")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ParkClientPageableDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getContent().size()).isEqualTo(1);
+        Assertions.assertThat(response.getTotalPages()).isEqualTo(2);
+        Assertions.assertThat(response.getNumber()).isEqualTo(1);
+        Assertions.assertThat(response.getTotalElements()).isEqualTo(2);
+    }
+
+    @Test
+    public void findAll_WithUserWithoutPermission_ReturnsErrorMessageWithStatus403() {
+        ErrorMessage response = testClient
+                .get()
+                .uri("/api/v1/clients")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bob@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getStatus()).isEqualTo(403);
     }
 }
