@@ -31,20 +31,19 @@ public class ParkUserController {
     private final ParkUserService parkUserService;
 
     @Operation(
-            summary = "Create a new user",
+            summary = "Creates a new user",
             description = "Resource to create a new user",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParkUserResponseDTO.class))),
-
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "User already exists.",
-                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
                             responseCode = "403",
                             description = "User without permissions to access this resource.",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(
+                            responseCode = "409",
+                            description = "User already exists.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
                             responseCode = "422",
@@ -67,7 +66,10 @@ public class ParkUserController {
                     @ApiResponse(
                             responseCode = "200",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ParkUserResponseDTO.class))),
-
+                    @ApiResponse(
+                            responseCode = "401",
+                            description = "Unauthorized. Requires previous authentication",
+                            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
                             responseCode = "403",
                             description = "User without permissions to access this resource.",
@@ -86,22 +88,24 @@ public class ParkUserController {
     }
 
     @Operation(
-            summary = "Update password",
-            description = "Request requires a Bearer token. Access allowed to ADMIN or CLIENT",
+            summary = "Updates the user password",
+            description = "Request requires a Bearer token. Access allowed to ADMIN or CLIENT profiles",
             security = @SecurityRequirement(name = "security"),
             responses = {
                     @ApiResponse(
-                            responseCode = "204"),
+                            responseCode = "204",
+                            description = "No content"),
                     @ApiResponse(
                             responseCode = "403",
                             description = "User without permissions to access this resource.",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
-                            responseCode = "500",
-                            description = "Passwords don't match",
+                            responseCode = "422",
+                            description = "Unprocessable content",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
-                            responseCode = "422",
+                            responseCode = "400",
+                            description = "Invalid password",
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
                     @ApiResponse(
                             responseCode = "500",

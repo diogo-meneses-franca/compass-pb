@@ -12,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ParkClientService {
@@ -39,5 +37,9 @@ public class ParkClientService {
     @Transactional(readOnly = true)
     public Page<ParkClientProjection> findAll(Pageable pageable) {
         return parkClientRepository.findAllPageable(pageable);
+    }
+
+    public ParkClient findClientByUserId(Long id) {
+        return parkClientRepository.findClientByUserId(id);
     }
 }

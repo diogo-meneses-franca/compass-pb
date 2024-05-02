@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-import static org.assertj.core.api.FactoryBasedNavigableListAssert.assertThat;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "/sql/clients/clients-insert.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "/sql/clients/clients-delete.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -230,6 +228,38 @@ public class ClientIT {
                 .get()
                 .uri("/api/v1/clients")
                 .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bob@email.com", "123456"))
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectBody(ErrorMessage.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getStatus()).isEqualTo(403);
+    }
+
+    @Test
+    public void getLoggedUserClientProfile_WithValidUserCredentials_ReturnsClientResponseDtoWithStatus200() {
+        ParkClientResponseDto response = testClient
+                .get()
+                .uri("/api/v1/clients/user-client-profile")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bob@email.com", "123456"))
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(ParkClientResponseDto.class)
+                .returnResult().getResponseBody();
+
+        Assertions.assertThat(response).isNotNull();
+        Assertions.assertThat(response.getId()).isNotNull();
+        Assertions.assertThat(response.getName()).isEqualTo("Bob Marley");
+        Assertions.assertThat(response.getCpf()).isEqualTo("36228624407");
+    }
+
+    @Test
+    public void getLoggedUserClientProfile_WithADMINCredentials_ReturnsErrorMessageWithStatus403() {
+        ErrorMessage response = testClient
+                .get()
+                .uri("/api/v1/clients/user-client-profile")
+                .headers(JwtAuthentication.getHeaderAuthorization(testClient, "bia@email.com", "123456"))
                 .exchange()
                 .expectStatus().isForbidden()
                 .expectBody(ErrorMessage.class)

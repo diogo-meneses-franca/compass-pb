@@ -35,7 +35,7 @@ public class ApiExceptionHandler {
         log.error("Api Error - ", e);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, e.getMessage()));
+                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity"));
     }
 
     @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
@@ -59,5 +59,10 @@ public class ApiExceptionHandler {
                                                          HttpServletRequest request){
         log.error("Api Error - ", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorMessage> runtimeException(RuntimeException e, HttpServletRequest request){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorMessage(request, HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong, please try again"));
     }
 }
