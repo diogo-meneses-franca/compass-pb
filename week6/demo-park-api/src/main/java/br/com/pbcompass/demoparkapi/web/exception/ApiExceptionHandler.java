@@ -2,6 +2,7 @@ package br.com.pbcompass.demoparkapi.web.exception;
 
 import br.com.pbcompass.demoparkapi.exception.CpfUniqueViolationException;
 import br.com.pbcompass.demoparkapi.exception.InvalidEntryDataException;
+import br.com.pbcompass.demoparkapi.exception.ParkingSpaceUniqueCodeViolationException;
 import br.com.pbcompass.demoparkapi.exception.UsernameUniqueViolationException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,8 +39,8 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, "Unprocessable Entity"));
     }
 
-    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class})
-    public ResponseEntity<ErrorMessage> usernameUniqueViolationException(
+    @ExceptionHandler({UsernameUniqueViolationException.class, CpfUniqueViolationException.class, ParkingSpaceUniqueCodeViolationException.class})
+    public ResponseEntity<ErrorMessage> uniqueViolationException(
             RuntimeException e,
             HttpServletRequest request) {
         log.error("Api Error - ", e);
