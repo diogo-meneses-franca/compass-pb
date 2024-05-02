@@ -51,7 +51,7 @@ public class ParkUserController {
                             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
             } )
     @PostMapping
-    public ResponseEntity<ParkUserResponseDTO> create(@Valid @RequestBody ParkUserCreateDTO parkUserCreateDTO) {
+    public ResponseEntity<ParkUserResponseDTO> save(@Valid @RequestBody ParkUserCreateDTO parkUserCreateDTO) {
         ParkUser mappedUser = ParkUserMapper.toUser(parkUserCreateDTO);
         ParkUser response = parkUserService.save(mappedUser);
         ParkUserResponseDTO mappedResponse = ParkUserMapper.toUserResponseDTO(response);
