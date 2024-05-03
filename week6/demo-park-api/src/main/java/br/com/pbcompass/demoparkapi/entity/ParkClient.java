@@ -15,6 +15,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * The Client
+ */
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "clients")
 @Entity

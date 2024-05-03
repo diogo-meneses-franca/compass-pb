@@ -15,6 +15,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * A class to represent the relationship many to many between ParkClient and ParkingSpace.
+ * A client can park in many different places and a parking space can be occupied by many different clients
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +26,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "clients_parking_space")
 @EntityListeners(AuditingEntityListener.class)
-public class ClientParkingSpace {
+public class Parking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -83,7 +87,7 @@ public class ClientParkingSpace {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ClientParkingSpace that = (ClientParkingSpace) o;
+        Parking that = (Parking) o;
         return Objects.equals(id, that.id);
     }
 

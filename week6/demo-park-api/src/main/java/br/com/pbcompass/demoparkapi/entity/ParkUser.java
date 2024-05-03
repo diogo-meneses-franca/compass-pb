@@ -14,6 +14,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * The user
+ * Class name choose due to conflict with the User class of the spring security framework
+ */
 @Getter
 @Setter
 @NoArgsConstructor
