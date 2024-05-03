@@ -18,7 +18,7 @@ public class ParkingCreateDto {
     @NotBlank
     @Size(min = 8, max = 8)
     @Pattern(regexp = "[A-Z]{3}-[0-9]{4}", message = "The vehicle plate must follow the pattern 'XXX-0000'")
-    private String plate;
+    private String vehiclePlate;
 
     @NotBlank
     private String brand;

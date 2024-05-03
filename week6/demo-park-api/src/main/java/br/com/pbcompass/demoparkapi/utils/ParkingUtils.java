@@ -11,9 +11,7 @@ public class ParkingUtils {
     public static String generateInvoice(){
         LocalDateTime dateTime = LocalDateTime.now();
         String invoiceNumber = dateTime.toString().substring(0,19);
-        invoiceNumber.replace("-", "")
-                .replace(":", "")
-                .replace("T", "-");
+        invoiceNumber = invoiceNumber.replace("-", "").replace(":", "").replace("T", "-");
         return invoiceNumber;
     }
 }
