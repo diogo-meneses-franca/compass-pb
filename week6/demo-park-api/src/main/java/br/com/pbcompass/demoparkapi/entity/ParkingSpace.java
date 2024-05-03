@@ -15,6 +15,9 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * The place where the client puts your vehicle
+ */
 @Getter
 @Setter
 @NoArgsConstructor

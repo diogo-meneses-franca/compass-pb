@@ -42,4 +42,11 @@ public class ParkClientService {
     public ParkClient findClientByUserId(Long id) {
         return parkClientRepository.findClientByUserId(id);
     }
+
+    @Transactional(readOnly = true)
+    public ParkClient findByCpf(String cpf) {
+        return parkClientRepository.findByCpf(cpf).orElseThrow(
+                () -> new EntityNotFoundException("Client with CPF " + cpf + " not found")
+        );
+    }
 }

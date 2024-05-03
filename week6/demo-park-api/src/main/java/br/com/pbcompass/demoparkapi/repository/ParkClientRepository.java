@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 public interface ParkClientRepository extends JpaRepository<ParkClient, Long> {
 
     @Query("select c from ParkClient c")
@@ -14,4 +16,6 @@ public interface ParkClientRepository extends JpaRepository<ParkClient, Long> {
 
     @Query("select c from ParkClient c where c.user.id = ?1")
     ParkClient findClientByUserId(Long userId);
+
+    Optional<ParkClient> findByCpf(String cpf);
 }

@@ -32,4 +32,11 @@ public class ParkingSpaceService {
                 () ->  new EntityNotFoundException(String.format("Parking space with %s code not found.", code))
         );
     }
+
+    @Transactional(readOnly = true)
+    public ParkingSpace findFirstByStatusFree() {
+        return parkingSpaceRepository.findFirstByStatus(ParkingSpace.ParkingSpaceStatus.FREE).orElseThrow(
+                () -> new EntityNotFoundException("Parking space with status free not found.")
+        );
+    }
 }
