@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class ParkingResponseDto {
 
     @JsonProperty("plate")
-    private String vehiclePlate;
+    private String plate;
     private String brand;
     private String model;
     private String color;

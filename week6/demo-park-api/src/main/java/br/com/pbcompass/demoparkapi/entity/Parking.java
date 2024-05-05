@@ -24,7 +24,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "clients_parking_space")
+@Table(name = "clients_parking_spaces")
 @EntityListeners(AuditingEntityListener.class)
 public class Parking {
 
@@ -36,7 +36,7 @@ public class Parking {
     private String invoice;
 
     @Column(name = "plate", nullable = false, length = 8)
-    private String vehiclePlate;
+    private String plate;
 
     @Column(name = "brand", nullable = false, length = 45)
     private String brand;

@@ -7,6 +7,7 @@ import br.com.pbcompass.demoparkapi.utils.ParkingUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -28,4 +29,18 @@ public class ParkingLotService {
         return parkingService.save(parking);
     }
 
+    public Parking checkout(String invoice) {
+        Parking parking = parkingService.findByInvoice(invoice);
+        LocalDateTime checkoutTime = LocalDateTime.now();
+        parking.setCheckout(checkoutTime);
+        BigDecimal cost = ParkingUtils.calculateCost(parking.getCheckin(), checkoutTime);
+        parking.setValue(cost);
+        long parkingTimes = parkingService.getHowManyTimesTheClientMadeACompleteParking(parking.getClient().getCpf());
+        BigDecimal discount = ParkingUtils.calculateDiscount(cost, parkingTimes);
+        parking.setDiscount(discount);
+        parking.getParkingSpace().setStatus(ParkingSpace.ParkingSpaceStatus.FREE);
+        return parkingService.save(parking);
+
+
+    }
 }
