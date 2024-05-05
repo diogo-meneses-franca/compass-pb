@@ -12,4 +12,5 @@ public interface ParkingRepository extends JpaRepository<Parking, Long> {
 
     @Query("select count(p) from Parking p where p.client.cpf = ?1 and p.checkout != null")
     long countHowManyTimesTheClientMadeCheckout(String cpf);
+
 }

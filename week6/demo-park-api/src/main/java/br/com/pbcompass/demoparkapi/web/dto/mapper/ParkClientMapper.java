@@ -2,14 +2,12 @@ package br.com.pbcompass.demoparkapi.web.dto.mapper;
 
 import br.com.pbcompass.demoparkapi.entity.ParkClient;
 import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientCreateDto;
-import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientPageableDto;
+import br.com.pbcompass.demoparkapi.web.dto.PageableResponseDto;
 import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientResponseDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ParkClientMapper {
@@ -22,7 +20,7 @@ public class ParkClientMapper {
         return new ModelMapper().map(client, ParkClientResponseDto.class);
     }
 
-    public static ParkClientPageableDto toDto(Page page){
-        return new ModelMapper().map(page, ParkClientPageableDto.class);
+    public static PageableResponseDto toDto(Page page){
+        return new ModelMapper().map(page, PageableResponseDto.class);
     }
 }

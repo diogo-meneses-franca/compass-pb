@@ -1,4 +1,4 @@
-package br.com.pbcompass.demoparkapi.web.dto.client;
+package br.com.pbcompass.demoparkapi.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ParkClientPageableDto {
+public class PageableResponseDto {
 
     private List content = new ArrayList();
     private boolean first;

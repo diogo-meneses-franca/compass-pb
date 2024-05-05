@@ -6,7 +6,7 @@ import br.com.pbcompass.demoparkapi.repository.projection.ParkClientProjection;
 import br.com.pbcompass.demoparkapi.service.ParkClientService;
 import br.com.pbcompass.demoparkapi.service.ParkUserService;
 import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientCreateDto;
-import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientPageableDto;
+import br.com.pbcompass.demoparkapi.web.dto.PageableResponseDto;
 import br.com.pbcompass.demoparkapi.web.dto.client.ParkClientResponseDto;
 import br.com.pbcompass.demoparkapi.web.dto.mapper.ParkClientMapper;
 import br.com.pbcompass.demoparkapi.web.dto.user.ParkUserResponseDTO;
@@ -145,10 +145,10 @@ public class ParkClientController {
             } )
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ParkClientPageableDto> findAll(@Parameter(hidden = true) @PageableDefault(size = 20, sort = {"name"}) Pageable pageable) {
+    public ResponseEntity<PageableResponseDto> findAll(@Parameter(hidden = true) @PageableDefault(size = 20, sort = {"name"}) Pageable pageable) {
         Page<ParkClientProjection> clientPage = parkClientService.findAll(pageable);
-        ParkClientPageableDto parkClientPageableDto = ParkClientMapper.toDto(clientPage);
-        return ResponseEntity.ok().body(parkClientPageableDto);
+        PageableResponseDto pageableResponseDto = ParkClientMapper.toDto(clientPage);
+        return ResponseEntity.ok().body(pageableResponseDto);
     }
 
     @Operation(
